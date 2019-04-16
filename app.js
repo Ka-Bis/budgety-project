@@ -83,6 +83,15 @@ let UIController = (function(){
             
         },
 
+        addListItem: function (obj, type) {
+            // Create texte HTML
+
+            // Create placeholder text
+
+            // Inserer le HTML dans le DOM
+
+        },
+
         getDOMstrings: function() {
             return DOMstrings;
         }
