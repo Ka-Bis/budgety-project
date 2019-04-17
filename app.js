@@ -1,18 +1,26 @@
-//BUGET CONTROLLER
+/*SUMMARY
+
+    1- BUGET CONTROLLER ======
+    2- UI CONTROLLER ======
+    3- GLOBAL APP CONTROLLER ======
+
+*/
+
+//1- BUGET CONTROLLER ======
 let budgetController = (function () {
-    let Expense = function (id, descriptionn, value) {
+    let Expense = function (id, description, value) { // depenses
         this.id = id;
-        this.description = descriptionn;
+        this.description = description;
         this.value = value;
     };
 
-    let Income = function (id, descriptionn, value) {
+    let Income = function (id, description, value) { // revenus
         this.id = id;
-        this.description = descriptionn;
+        this.description = description;
         this.value = value;
     };
 
-    //tableau pour stocker toutes les données des depenses et gains
+    //tableau pour stocker toutes les données des depenses et gains + TOT
     let data = {
         allItems: {
             exp: [],
@@ -35,7 +43,6 @@ let budgetController = (function () {
                 ID = 0;
             }
 
-
             /*selectionne le type (exp) ou (inc).
             Si type = exp => creation tableau avec ID, Descrip, valeur
             Sinon si type = inc => idem 
@@ -52,6 +59,10 @@ let budgetController = (function () {
             return newItem;
         },
 
+        calculateBudget:function () {
+
+        },
+
         testing: function () {
             console.log(data);
 
@@ -60,11 +71,11 @@ let budgetController = (function () {
 })();
 
 
-// UI CONTROLLER 
+//2- UI CONTROLLER ======
 let UIController = (function () {
 
-    // appelle les classes du fichier HTML
-    let DOMstrings = {
+    // remplace les classes du fichier HTML par des valeur
+    let DOMstrings = { 
         inputType: '.add__type',
         inputDescription: '.add__description',
         inputValue: '.add__value',
@@ -78,11 +89,11 @@ let UIController = (function () {
             return {
                 type: document.querySelector(DOMstrings.inputType).value, // le type => soit gain(+/inc) soit depense(-/exp)
                 description: document.querySelector(DOMstrings.inputDescription).value, // description de la depnse ou du gain
-                value: document.querySelector(DOMstrings.inputValue).value //valeur de la depense ou du gain
+                value: parseFloat( document.querySelector(DOMstrings.inputValue).value)//valeur de la depense ou du gain
             };
         },
 
-        addListItem: function (obj, type) {
+        addListItem: function (obj, type) { //ajoute les données dans l'UI
             // Create texte HTML avec placeholder
             let html, newhtml, element;
 
@@ -94,7 +105,7 @@ let UIController = (function () {
             } else if (type === 'exp') {
                 element = DOMstrings.expensesContainer;
 
-                html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                html = '<div class="item clearfix" id="TOTO-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
 
             }
 
@@ -108,7 +119,23 @@ let UIController = (function () {
 
         },
 
-        getDOMstrings: function () {
+        clearFields: function() { //efface le texte dans le champs à chaque validation
+            var fields, fieldsArr;
+            
+            fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
+            
+            fieldsArr = Array.prototype.slice.call(fields);
+            
+            fieldsArr.forEach(function(current, index, array) {
+                current.value = "";
+            });
+            
+            fieldsArr[0].focus(); //permet de se positionner dans le premier champ à chaque validation
+        },
+
+
+
+        getDOMstrings: function () { // retourne l'object DOMstring
             return DOMstrings;
         }
     };
@@ -116,7 +143,7 @@ let UIController = (function () {
 })();
 
 
-// GLOBAL APP CONTROLLER
+//3- GLOBAL APP CONTROLLER ======
 let controller = (function (budgetCtrl, UICtrl) {
 
     let setupEventListenners = function () {
@@ -125,30 +152,46 @@ let controller = (function (budgetCtrl, UICtrl) {
         document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
         //va declencher un evenement du click
         document.addEventListener('keypress', function (event) {
+        // Si la touche ENTER est préssé => on appelle la fontion ctrlAddItem()
             if (event.keycode == 13 || event.which === 13) {
-                // Si la touche ENTER est préssé => on appelle la fontion ctrlAddItem()
-                //event.wich ==> pour les anciens navigateur mais event.wich = event.keycode
                 ctrlAddItem(); //on appelle la fonction ctrlAddItem()
             }
         });
     };
 
+    let updateBudget = function () { 
+        // 1. Calcule le budget
+
+        // 2. return the Budget
+
+        // 3. Affiche le budget sur UI
+    };
+
     let ctrlAddItem = function () {
         let input, newItem;
 
-        // 1. Get the field input data ==> Obtenir les categories de données d'entrée
+        // 1. Obtenir les categories de données d'entrée
         input = UICtrl.getInput();
-        // console.log(input);//affiche les données dans la console
+        console.log(input);//affiche les données dans la console
 
-        // 2. Add the item the budget controller ==> Ajouter l'item du budget controller
-        newItem = budgetCtrl.addItem(input.type, input.description, input.value);
-        // 3. Add the item to the UI ==> Ajouter l'item de l'interface utilisateur(UI)
-        UICtrl.addListItem(newItem,input.type);
-        // 4. Calculate de budget ==> calculer le budget
-        // 5. Display the budget ==> afficher le budget sur UI
-        //---
-        console.log("Ça marche");//le message ci contre s'affichera dans la console si le programme fonctionne
+        if(input.description !== "" && !isNaN(input.value) && input.value > 0){
 
+            // 2. Ajoute des items dans le budget controller
+            newItem = budgetCtrl.addItem(input.type, input.description, input.value); 
+
+            // 3. Ajoute les items dans l'interface utilisateur(UI)
+            UICtrl.addListItem(newItem,input.type);//affiche les données dans l'interface
+
+            // 4. Efface le champ
+            UICtrl.clearFields();
+
+            // 5. calcule et met à jour le budget
+            updateBudget();
+
+            //---
+            console.log("Ça marche");
+            //le message ci contre s'affichera dans la console si le programme fonctionne
+        }
     };
 
     return {
