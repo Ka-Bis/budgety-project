@@ -100,7 +100,7 @@ let budgetController = (function () {
             } else {
                 data.percentage = -1;
                 // console.log("calcul pourcentage impossible...");
-                alert("Calcul du pourcentage impossible...");
+                // alert("Calcul du pourcentage impossible...");
                 
             }    
         },
@@ -179,6 +179,12 @@ let UIController = (function () {
 
         },
 
+        deleteListItem:function(selectorID) {
+            let el = document.getElementById(selectorID);
+            el.parentNode.removeChild(el);
+ 
+        },
+
         clearFields: function() { //efface le texte dans le champs à chaque validation
             var fields, fieldsArr;
             
@@ -255,13 +261,10 @@ let controller = (function (budgetCtrl, UICtrl) {
         console.log(input);//affiche les données dans la console dans une liste
 
         if(input.description !== "" && !isNaN(input.value) && input.value > 0){
-            
             // 2. Ajoute des items dans le budget controller
             newItem = budgetCtrl.addItem(input.type, input.description, input.value); 
-
             // 3. Ajoute les items dans l'interface utilisateur(UI)
             UICtrl.addListItem(newItem,input.type);//affiche les données dans l'interface
-
             // 4. Efface le champ
             UICtrl.clearFields();
 
@@ -292,8 +295,11 @@ let controller = (function (budgetCtrl, UICtrl) {
             budgetCtrl.deleteItem(type, ID);
 
             //2. supprimer les items dasn l'UI
+            UICtrl.deleteListItem(itemID);
 
             //3. Mettre à jour le nouveau budget
+            updateBudget();
+
         }
     };
 
