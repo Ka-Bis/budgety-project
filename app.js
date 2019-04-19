@@ -178,13 +178,19 @@ let UIController = (function () {
 
             int = numSplit[0];// Entier
             if(int.length > 3){
-                int = int.substr(0,int.length - 3 )+ ',' +int.substr(int.length -3,3);
+                int = int.substr(0,int.length - 3 )+ ' ' +int.substr(int.length -3,3);
             }
             dec = numSplit[1]; // Decimal
 
             return (type === "exp" ? '-' : '+') + ' ' + int + '.' + dec
             //retourne condition if + part entiere + part decimal
-        };
+    };
+
+    let nodeListForEach = function(list, callback) { //parcours la liste pour afficher les %
+        for (var i = 0; i< list.length;i++){
+            callback(list[i],i);
+        }
+    };
 
     return {
         getInput: function () { 
@@ -263,28 +269,22 @@ let UIController = (function () {
             
         },
 
-        displayMonth : function() {
+        displayMonth : function() { // affiche la date
             let now, date, months, month, year;
 
             months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
             now = new Date();
 
-            date = now.getDate();
-            month = now.getMonth();
-            year = now.getFullYear();
-            document.querySelector(DOMstrings.dateLabel).textContent = date+' '+months[month] +' '+year;
+            date = now.getDate(); // date
+            month = now.getMonth(); // mois 
+            year = now.getFullYear(); // année
+            document.querySelector(DOMstrings.dateLabel).textContent = date+' '+months[month] +' '+year; // date+mois+année
             
         },
 
         displayPercentages: function(percentages) { // affiche le % dans UI
            let fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
-
-           let nodeListForEach = function(list, callback) { //parcours la liste pour afficher les %
-                for (var i = 0; i< list.length;i++){
-                    callback(list[i],i);
-                }
-           };
 
            nodeListForEach(fields,function(current,index) {  // affiche la part de % de chaque items
                if (percentages[index] > 0){
@@ -297,7 +297,21 @@ let UIController = (function () {
            });
         },
 
-        
+        changedType : function() { //change la couleur des chmps en fct du type (+/-)
+            let fields;
+
+            fields = document.querySelectorAll(
+                DOMstrings.inputType + ',' +
+                DOMstrings.inputDescription + ',' +
+                DOMstrings.inputValue
+                );
+
+            nodeListForEach(fields,function(cur){ // change en rouge quand => (-)
+                cur.classList.toggle('red-focus');
+            });
+
+            document.querySelector(DOMstrings.inputBtn).classList.toggle('red');
+        },
 
         getDOMstrings: function () { // retourne l'objet DOMstring
             return DOMstrings;
@@ -323,6 +337,8 @@ let controller = (function (budgetCtrl, UICtrl) {
         });
 
         document.querySelector(DOM.container).addEventListener('click',ctrlDeleteItem);
+
+        document.querySelector(DOM.inputType).addEventListener('change',UICtrl.changedType);
     };
 
     let updateBudget = function () {  //Mise a jour du budget
@@ -365,7 +381,6 @@ let controller = (function (budgetCtrl, UICtrl) {
             UICtrl.clearFields();
             // 5. calcule et met à jour le budget
             updateBudget();
-
             // 6. Calcule et met à jour le %
             updatePercentages();
 
@@ -405,7 +420,7 @@ let controller = (function (budgetCtrl, UICtrl) {
     return { 
         init: function () {  //Initialisation de ma l'application
             console.log("Initialisation de l'application ...");
-            UICtrl.displayMonth();
+            UICtrl.displayMonth(); //initialise la date d'aujourd'hui
             UICtrl.displayBudget({ //initialise toutes les données à 0 sauf pourcentage => -1
                 budget: 0,
                 totalInc: 0,
