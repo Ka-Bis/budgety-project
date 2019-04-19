@@ -21,6 +21,10 @@ body {
     position: relative;
     height: 100vh;
     font-weight: 400;
+    /* background-color: aqua; */
+    /* background-image: url(money.jpg);
+    background-size: cover;
+    background-position: center; */
 }
 
 .right { float: right; }
