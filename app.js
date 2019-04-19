@@ -114,7 +114,6 @@ let budgetController = (function () {
                 data.percentage = -1;
                 // console.log("calcul pourcentage impossible...");
                 // alert("Calcul du pourcentage impossible...");
-                
             }    
         },
 
@@ -153,7 +152,7 @@ let budgetController = (function () {
 let UIController = (function () {
 
     
-    let DOMstrings = { // remplace les classes du fichier HTML par des valeur
+    let DOMstrings = { // remplace les classes du fichier HTML par des valeurs
         inputType: '.add__type',
         inputDescription: '.add__description',
         inputValue: '.add__value',
@@ -166,7 +165,25 @@ let UIController = (function () {
         percentageLabel: '.budget__expenses--percentage',
         container: '.container',
         expensesPercLabel: '.item__percentage'
-    }
+    };
+
+    let formatNumber = function(num,type) { // separe chiffre des millieme par une ',' et affiche nb à 2 decimal
+            let numSplit,int,dec;
+
+            num = Math.abs(num);
+            num = num.toFixed(2);
+
+            numSplit = num.split('.');
+
+            int = numSplit[0];// Entier
+            if(int.length > 3){
+                int = int.substr(0,int.length - 3 )+ ',' +int.substr(int.length -3,3);
+            }
+            dec = numSplit[1]; // Decimal
+
+            return (type === "exp" ? '-' : '+') + ' ' + int + '.' + dec
+            //retourne condition if + part entiere + part decimal
+        };
 
     return {
         getInput: function () { 
@@ -196,7 +213,7 @@ let UIController = (function () {
             // Replace placeholder text
             newhtml = html.replace('%id%', obj.id);
             newhtml = newhtml.replace('%description%', obj.description);
-            newhtml = newhtml.replace('%value%', obj.value);
+            newhtml = newhtml.replace('%value%', formatNumber(obj.value,type));
             // console.log(newhtml);
             
 
@@ -229,9 +246,13 @@ let UIController = (function () {
         },
 
         displayBudget: function(obj) { //affiche le TOT des données dans l'UI
-            document.querySelector(DOMstrings.budgetLabel).textContent = obj.budget;
-            document.querySelector(DOMstrings.incomeLabel).textContent = obj.totalInc;
-            document.querySelector(DOMstrings.expenseLabel).textContent = obj.totalExp;
+            let type;
+            
+            obj.budget > 0 ? type = 'inc' : type = 'exp';
+    
+            document.querySelector(DOMstrings.budgetLabel).textContent = formatNumber(obj.budget,type) ;
+            document.querySelector(DOMstrings.incomeLabel).textContent = formatNumber(obj.totalInc,'inc');
+            document.querySelector(DOMstrings.expenseLabel).textContent = formatNumber(obj.totalExp,'exp');
             
             if (obj.percentage > 0){
                 document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage+'%';
@@ -241,23 +262,27 @@ let UIController = (function () {
             
         },
 
-        displayPercentages: function(percentages) {
+        displayPercentages: function(percentages) { // affiche le % dans UI
            let fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
 
-           let nodeListForEach = function(list, callback) {
+           let nodeListForEach = function(list, callback) { //parcours la liste pour afficher les %
                 for (var i = 0; i< list.length;i++){
                     callback(list[i],i);
                 }
            };
 
-           nodeListForEach(fields,function(current,index) {
+           nodeListForEach(fields,function(current,index) {  // affiche la part de % de chaque items
                if (percentages[index] > 0){
                 current.textContent = percentages[index] + '%';
                } else {
                 current.textContent = '---';
                }
+               console.log('% item '+current.textContent);
+               
            });
         },
+
+        
 
         getDOMstrings: function () { // retourne l'objet DOMstring
             return DOMstrings;
@@ -356,7 +381,7 @@ let controller = (function (budgetCtrl, UICtrl) {
             UICtrl.deleteListItem(itemID);
             // 3. Met à jour le nouveau budget
             updateBudget();
-            // 4. Calcule et met à jour le %
+            // 4. Calcule et met à jour le % apres suppr
             updatePercentages();
 
         };
