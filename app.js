@@ -164,7 +164,8 @@ let UIController = (function () {
         expenseLabel:'.budget__expenses--value',
         percentageLabel: '.budget__expenses--percentage',
         container: '.container',
-        expensesPercLabel: '.item__percentage'
+        expensesPercLabel: '.item__percentage',
+        dateLabel: '.budget__title--month'
     };
 
     let formatNumber = function(num,type) { // separe chiffre des millieme par une ',' et affiche nb à 2 decimal
@@ -247,7 +248,7 @@ let UIController = (function () {
 
         displayBudget: function(obj) { //affiche le TOT des données dans l'UI
             let type;
-            
+
             obj.budget > 0 ? type = 'inc' : type = 'exp';
     
             document.querySelector(DOMstrings.budgetLabel).textContent = formatNumber(obj.budget,type) ;
@@ -259,6 +260,20 @@ let UIController = (function () {
             }else {
                 document.querySelector(DOMstrings.percentageLabel).textContent = '---';
             }
+            
+        },
+
+        displayMonth : function() {
+            let now, date, months, month, year;
+
+            months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+            now = new Date();
+
+            date = now.getDate();
+            month = now.getMonth();
+            year = now.getFullYear();
+            document.querySelector(DOMstrings.dateLabel).textContent = date+' '+months[month] +' '+year;
             
         },
 
@@ -390,6 +405,7 @@ let controller = (function (budgetCtrl, UICtrl) {
     return { 
         init: function () {  //Initialisation de ma l'application
             console.log("Initialisation de l'application ...");
+            UICtrl.displayMonth();
             UICtrl.displayBudget({ //initialise toutes les données à 0 sauf pourcentage => -1
                 budget: 0,
                 totalInc: 0,
