@@ -24,8 +24,8 @@ body {
 }
 
 .right { float: right; }
-.red { color: #FF5049 !important; }
-.red-focus:focus { border: 1px solid #FF5049 !important; }
+.red { color: #c71010cf !important; }
+.red-focus:focus { border: 1px solid #c71010cf !important; }
 
 /**********************************************
 *** TOP PART
@@ -35,7 +35,7 @@ body {
     height: 40vh;
     background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url(money.jpg);
     background-size: cover;
-    background-position: center;
+    background-position: bottom;
     position: relative;
 }
 
@@ -71,17 +71,19 @@ body {
 
 .budget__income {
     margin-bottom: 10px;
-    background-color: #28B9B5;
+    /* background-color: #28B9B5; */
+    background-color: #2882b9d1;
 }
 
 .budget__expenses {
-    background-color: #FF5049;
+    /* background-color: #FF5049; */
+    background-color: #c71010cf;
 }
 
 .budget__income--text,
 .budget__expenses--text {
     float: left;
-    font-size: 13px;
+    font-size: 15px;
     color: #444;
     margin-top: 2px;
 }
@@ -154,9 +156,11 @@ body {
 
 .add__btn {
     font-size: 35px;
+    /* font-weight: bold; */
     background: none;
     border: none;
-    color: #28B9B5;
+    /* color: #28B9B5; */
+    color: #2882b9d1;
     cursor: pointer;
     display: inline-block;
     vertical-align: middle;
@@ -170,7 +174,8 @@ body {
 .add__description:focus,
 .add__value:focus {
     outline: none;
-    border: 1px solid #28B9B5;
+    /* border: 1px solid #28B9B5; */
+    border: 1px solid #2882b9d1;
 }
 
 .add__btn:focus { outline: none; }
@@ -199,8 +204,8 @@ h2 {
     margin-bottom: 15px;
 }
 
-.icome__title { color: #28B9B5; }
-.expenses__title { color: #FF5049; }
+.icome__title { /*color: #28B9B5,*/ color: #2882b9d1; }
+.expenses__title {/* color: #FF5049,*/color: #c71010cf; }
 
 .item {
     padding: 13px;
@@ -233,13 +238,15 @@ h2 {
 
 .income .item__value,
 .income .item__delete--btn {
-    color: #28B9B5;
+    /* color: #28B9B5; */
+    color: #2882b9d1;
 }
 
 .expenses .item__value,
 .expenses .item__percentage,
 .expenses .item__delete--btn {
-    color: #FF5049;
+    /* color: #FF5049; */
+    color: #c71010cf;
 }
 
 
@@ -269,7 +276,8 @@ h2 {
 .unpaid {
     background-color: #FFDAD9 !important;
     cursor: pointer;
-    color: #FF5049;
+    /* color: #FF5049; */
+    color: #c71010cf;
 
 }
 
